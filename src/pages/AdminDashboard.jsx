@@ -5,6 +5,7 @@ export default function AdminDashboard() {
   const [codes, setCodes] = useState([]);
   const [codeType, setCodeType] = useState('single');
 
+  // Charger les codes sauvegardés au démarrage
   useEffect(() => {
     const saved = localStorage.getItem('tableau-recap-codes');
     if (saved) {
@@ -12,7 +13,7 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Générer un code sécurisé TAB1752-ABC123
+  // Générer un code sécurisé avec heure UTC
   const generateSecureCode = () => {
     const now = new Date();
     const hours = now.getUTCHours().toString().padStart(2, '0');
@@ -26,10 +27,11 @@ export default function AdminDashboard() {
     for (let i = 0; i < 6; i++) {
       suffix += all[Math.floor(Math.random() * all.length)];
     }
+
     return `TAB${timeCode}-${suffix}`;
   };
 
-  // Générer 1 ou 6 codes
+  // Générer 1 ou 6 nouveaux codes
   const handleGenerate = () => {
     const newCodes = [];
     const count = codeType === 'single' ? 1 : 6;
@@ -118,7 +120,7 @@ export default function AdminDashboard() {
       <div style={styles.section}>
         <h2>🔑 Code d'accès du concepteur</h2>
         <p>
-          <strong>Code actuel :</strong> <code style={{ fontSize: '1.2em' }}>{getCurrentDesignerCode()}</code>
+          <strong>Code actuel：</strong> <code style={{ fontSize: '1.2em' }}>{getCurrentDesignerCode()}</code>
         </p>
         <button onClick={sendCodeByEmail} style={styles.emailButton}>
           📧 Envoyer par email
@@ -210,6 +212,7 @@ export default function AdminDashboard() {
   );
 }
 
+// Styles
 const styles = {
   container: {
     padding: '20px',
