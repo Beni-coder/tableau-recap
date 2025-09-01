@@ -7,9 +7,15 @@ export default function AdminDashboard() {
 
   // Charger les codes sauvegardés au démarrage
   useEffect(() => {
-    const saved = localStorage.getItem('tableau-recap-codes');
-    if (saved) {
-      setCodes(JSON.parse(saved));
+    try {
+      const saved = localStorage.getItem('tableau-recap-codes');
+      if (saved) {
+        setCodes(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Erreur lors du chargement des codes :", e);
+      // Fallback : initialiser avec un tableau vide
+      setCodes([]);
     }
   }, []);
 
@@ -50,8 +56,12 @@ export default function AdminDashboard() {
     }
 
     setCodes((prev) => [...prev, ...newCodes]);
-    const allCodes = JSON.parse(localStorage.getItem('tableau-recap-codes') || '[]');
-    localStorage.setItem('tableau-recap-codes', JSON.stringify([...allCodes, ...newCodes]));
+    try {
+      const allCodes = JSON.parse(localStorage.getItem('tableau-recap-codes') || '[]');
+      localStorage.setItem('tableau-recap-codes', JSON.stringify([...allCodes, ...newCodes]));
+    } catch (e) {
+      console.error("Erreur lors de la sauvegarde des codes :", e);
+    }
   };
 
   // Invalider un code
@@ -63,10 +73,14 @@ export default function AdminDashboard() {
         )
       );
 
-      const updated = codes.map((c) =>
-        c.id === id ? { ...c, used: true, usedAt: new Date().toISOString() } : c
-      );
-      localStorage.setItem('tableau-recap-codes', JSON.stringify(updated));
+      try {
+        const updated = codes.map((c) =>
+          c.id === id ? { ...c, used: true, usedAt: new Date().toISOString() } : c
+        );
+        localStorage.setItem('tableau-recap-codes', JSON.stringify(updated));
+      } catch (e) {
+        console.error("Erreur lors de la mise à jour des codes :", e);
+      }
     }
   };
 
